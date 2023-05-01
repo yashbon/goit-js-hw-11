@@ -21,8 +21,9 @@ const options = {
 const observer = new IntersectionObserver(onPagination, options)
 let pictureName = '';
 let page = 1;
+let totalPages = 0;
 document.body.appendChild(guard);
-let flag = false;
+
 form.addEventListener('submit', onSubmit);
 
 function onSubmit(event) {
@@ -30,10 +31,11 @@ function onSubmit(event) {
     pictureName = document.querySelector('[type ="text"]').value.trim();
     page = 1;
     galleryPictures.innerHTML = '';
-    if (!event.target.elements.searchQuery.value) {
+
+    if (!pictureName) {
         Notify.failure('Please, enter a search query');
+        galleryPictures.innerHTML = '';
     } else {
-        flag = false;
         getPictures(pictureName, page);
     }
 }
@@ -64,8 +66,8 @@ function createMarkup(imagesArray) {
     `).join('');
 }
 
-let totalPages = 0;
 async function getPictures(pictureName, page) {
+    if (!pictureName) { return }
     const BASE_URL = 'https://pixabay.com/api/';
     const API_KEY = '35752647-f3bb72efc92106ef6393a7805';
     const searchParams = new URLSearchParams({
@@ -77,11 +79,11 @@ async function getPictures(pictureName, page) {
         per_page: 40,
         page: page,
     });
-
     const URL = `${BASE_URL}?${searchParams}`;
+
     const response = await axios.get(URL);
 
-    if (!flag) {
+    if (page === 1) {
         totalPages = Math.round(response.data.totalHits / 40);
 
         if (!response.status === 200) {
@@ -99,15 +101,14 @@ async function getPictures(pictureName, page) {
             );
             observer.observe(guard);
         }
-        flag = true;
     }
 
     galleryPictures.insertAdjacentHTML('beforeend', createMarkup(response.data.hits));
+
     if (response.data.hits.length > 0) {
         lightbox.refresh();
     }
 
-    console.log(pictureName, page);
     if (page > 2) { scroll() };
 
     if (page === totalPages) {
@@ -138,5 +139,4 @@ function scroll() {
         top: cardHeight * 2,
         behavior: "smooth",
     });
-    // alert('next page')
 }
