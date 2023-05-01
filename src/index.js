@@ -103,14 +103,15 @@ async function getPictures(pictureName, page) {
     }
 
     galleryPictures.insertAdjacentHTML('beforeend', createMarkup(response.data.hits));
-    if (page > 1) {
-        scroll();
-    }
     if (response.data.hits.length > 0) {
         lightbox.refresh();
     }
+
+    console.log(pictureName, page);
+    if (page > 2) { scroll() };
+
     if (page === totalPages) {
-        Notify.init({ timeout: 10000 });
+        // Notify.init({ timeout: 5000 });
         Notify.warning(
             "We're sorry, but you've reached the end of search results."
         );
@@ -138,4 +139,5 @@ function scroll() {
         top: cardHeight * 2,
         behavior: "smooth",
     });
+    // alert('next page')
 }
