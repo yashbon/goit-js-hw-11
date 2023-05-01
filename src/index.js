@@ -111,7 +111,6 @@ async function getPictures(pictureName, page) {
     if (page > 2) { scroll() };
 
     if (page === totalPages) {
-        // Notify.init({ timeout: 5000 });
         Notify.warning(
             "We're sorry, but you've reached the end of search results."
         );
