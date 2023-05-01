@@ -101,12 +101,14 @@ async function getPictures(pictureName, page) {
         }
         flag = true;
     }
+
     galleryPictures.insertAdjacentHTML('beforeend', createMarkup(response.data.hits));
-    if (response.data.hits.length > 0) {
-        lightbox.refresh();
+    if (page > 1) {
         scroll();
     }
-
+    if (response.data.hits.length > 0) {
+        lightbox.refresh();
+    }
     if (page === totalPages) {
         Notify.init({ timeout: 10000 });
         Notify.warning(
